@@ -27,7 +27,7 @@
 
 <script>
   import { decodeBase64 } from "oslo/encoding";
-  import type { Message } from "../lib/message";
+import type { Message } from "../lib/message";
 
   listen();
 
@@ -80,21 +80,35 @@
     let lastChunk = "";
     while (!result.done) {
       const value = lastChunk + new TextDecoder().decode(result.value);
+      console.log("value", value);
+      
       const chunks = value.split("\n\n");
+      console.log("chunks", chunks);
       const completedGroup = chunks.slice(0, -1);
+      console.log("completedGroup", completedGroup);
       lastChunk = chunks.at(-1) ?? "";
+      console.log("lastChunk", lastChunk);
       for (const chunk of completedGroup) {
         const lines = chunk.split("\n");
+        if (lines[0] === "") {
+          lines.shift();
+        }
+        console.log("lines", lines);
         const maybeEventLine = lines.at(0);
+        // const maybeEventLine = lines.at(0);
+        console.log("maybeEventLine", maybeEventLine)
         let event: string | null = null;
         if (maybeEventLine && maybeEventLine.startsWith("event: ")) {
+          console.log("test")
           event = maybeEventLine.replace("event: ", "");
+          console.log("event", event);
           lines.shift();
         }
         if (event !== "message") {
           throw new Error("Event not defined");
         }
         for (const line of lines) {
+          console.log("line", line);
           if (!line.startsWith("data: ")) {
             throw new Error(`Expected data, got:\n${line}`);
           }
