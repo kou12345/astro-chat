@@ -1,5 +1,5 @@
-import { addMessageListener } from "../../lib/message";
 import { encodeBase64 } from "oslo/encoding";
+import { addMessageListener } from "../../lib/message";
 
 export async function GET() {
   const textEncoder = new TextEncoder();
